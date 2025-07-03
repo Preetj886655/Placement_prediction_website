@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Prediction Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+     <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50">
+    <header class="gradient-bg text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-4">Career Placement Predictor</h1>
+            <p class="text-xl opacity-90 max-w-2xl mx-auto">
+                Discover your career potential with our AI-powered prediction engine analyzing your skills and qualifications
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <!-- Input Form Section -->
+        <section class="bg-white rounded-xl shadow-md p-8 mb-12">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Student Profile</h2>
+            
+            <form id="predictionForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Academic Information -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-medium text-gray-700 border-b pb-2">Academic Details</h3>
+                    
+                    <div>
+                        <label for="cgpa" class="block text-sm font-medium text-gray-700 mb-1">CGPA (0-10)</label>
+                        <input type="range" id="cgpa" name="cgpa" min="0" max="10" step="0.1" value="7.5" class="w-full input-slider">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>0</span>
+                            <span id="cgpaValue">7.5</span>
+                            <span>10</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="iq_score" class="block text-sm font-medium text-gray-700 mb-1">IQ Score (70-150)</label>
+                        <input type="range" id="iq_score" name="iq_score" min="70" max="150" value="110" class="w-full input-slider">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>70</span>
+                            <span id="iqValue">110</span>
+                            <span>150</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="tech_skills" class="block text-sm font-medium text-gray-700 mb-1">Technical Skills (1-100)</label>
+                        <input type="range" id="tech_skills" name="tech_skills" min="1" max="100" value="65" class="w-full input-slider">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>1</span>
+                            <span id="techValue">65</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Soft Skills and Other Factors -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-medium text-gray-700 border-b pb-2">Skills Assessment</h3>
+                    
+                    <div>
+                        <label for="comms_skills" class="block text-sm font-medium text-gray-700 mb-1">Communication Skills (1-100)</label>
+                        <input type="range" id="comms_skills" name="comms_skills" min="1" max="100" value="75" class="w-full input-slider">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>1</span>
+                            <span id="commsValue">75</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="projects" class="block text-sm font-medium text-gray-700 mb-1">Projects Completed</label>
+                        <input type="range" id="projects" name="projects" min="0" max="20" value="4" class="w-full input-slider">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>0</span>
+                            <span id="projectsValue">4</span>
+                            <span>20</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="internships" class="block text-sm font-medium text-gray-700 mb-1">Internship Months</label>
+                        <input type="range" id="internships" name="internships" min="0" max="12" value="2" class="w-full input-slider">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>0</span>
+                            <span id="internshipsValue">2</span>
+                            <span>12</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+                            Predict Placement
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+        
+        <!-- Results Section -->
+        <section id="resultsSection" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Probability Card -->
+                <div class="prediction-card bg-white rounded-xl shadow-md p-6 text-center border-t-4 border-indigo-500">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Placement Probability</h3>
+                    <div class="text-5xl font-bold text-indigo-600 mb-3" id="probabilityScore">0%</div>
+                    <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="probabilityBar" class="h-full bg-indigo-500" style="width: 0%"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">Chance of getting placed based on your profile</p>
+                </div>
+                
+                <!-- Salary Prediction -->
+                <div class="prediction-card bg-white rounded-xl shadow-md p-6 text-center border-t-4 border-green-500">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Expected Salary Range</h3>
+                    <div class="text-4xl font-bold text-green-600 mb-2" id="salaryRange">₹0 - ₹0</div>
+                    <p class="text-sm text-gray-500">Average package for similar profiles</p>
+                </div>
+                
+                <!-- Company Tier -->
+                <div class="prediction-card bg-white rounded-xl shadow-md p-6 text-center border-t-4 border-purple-500">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Recommended Companies</h3>
+                    <div class="text-2xl font-bold text-purple-600 mb-3" id="companyTier">Tier 3</div>
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/cf087d16-2fb5-4a0f-8e47-00de20cbbfd6.png" alt="Logos of recommended companies including tech giants and startups" class="w-full rounded">
+                </div>
+            </div>
+            
+            <!-- Improvement Suggestions -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Profile Enhancement Suggestions</h3>
+                <div id="suggestionsList" class="space-y-3">
+                    <!-- Suggestions will be dynamically added here -->
+                </div>
+            </div>
+            
+            <!-- Detailed Analysis -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Detailed Analysis</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/52df276b-5c65-42ea-8b39-e50d52b771b7.png" alt="Radar chart showing strengths in technical skills but weak in communication" class="w-full rounded-lg mb-4">
+                        <p class="text-gray-700">
+                            Your technical skills are above average, but communication needs improvement as indicated by the radar chart.
+                        </p>
+                    </div>
+                    <div>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/89818d5c-de2f-4429-971a-d1c9ed594046.png" alt="Bar graph comparing your scores to placement-ready candidates" class="w-full rounded-lg mb-4">
+                        <p class="text-gray-700">
+                            Compared to successfully placed candidates, your profile shows gaps in internship experience and completed projects.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4">Placement Prediction System © 2023</p>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-gray-300 hover:text-white">Privacy Policy</a>
+                <a href="#" class="text-gray-300 hover:text-white">Terms of Service</a>
+                <a href="#" class="text-gray-300 hover:text-white">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Update slider value displays
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            const valueDisplay = document.getElementById(`${slider.id}Value`);
+            slider.addEventListener('input', () => {
+                valueDisplay.textContent = slider.value;
+            });
+        });
+
+        // Form submission handler
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Analyzing...';
+            
+            // Mock API call (replace with actual API endpoint)
+            try {
+                const formData = new FormData(e.target);
+                const inputs = Object.fromEntries(formData.entries());
+                
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Process mock prediction (replace with actual API call)
+                const prediction = calculatePrediction(inputs);
+                
+                // Display results
+                displayResults(prediction);
+                document.getElementById('resultsSection').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Prediction error:', error);
+                alert('Failed to get prediction. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Predict Placement';
+            }
+        });
+
+        // Mock prediction algorithm (replace with actual model)
+        function calculatePrediction(inputs) {
+            // Simple weighted calculation for demo purposes
+            const weights = {
+                cgpa: 0.25,
+                iq_score: 0.15,
+                tech_skills: 0.25,
+                comms_skills: 0.15,
+                projects: 0.1,
+                internships: 0.1
+            };
+            
+            // Normalize values and calculate weighted score
+            const normalized = {
+                cgpa: inputs.cgpa / 10,
+                iq_score: (inputs.iq_score - 70) / 80,
+                tech_skills: inputs.tech_skills / 100,
+                comms_skills: inputs.comms_skills / 100,
+                projects: inputs.projects / 20,
+                internships: inputs.internships / 12
+            };
+            
+            let weightedScore = 0;
+            for (const [key, weight] of Object.entries(weights)) {
+                weightedScore += normalized[key] * weight;
+            }
+            
+            // Calculate probability (0-1 to percentage)
+            const probability = Math.min(Math.max(weightedScore * 100, 10), 95).toFixed(1);
+            
+            // Determine salary range based on probability
+            const baseSalary = 25000 + (probability * 800);
+            const salaryRange = {
+                min: Math.round(baseSalary * 0.8),
+                max: Math.round(baseSalary * 1.2)
+            };
+            
+            // Determine company tier
+            let companyTier = 'Tier 3';
+            if (probability > 65) companyTier = 'Tier 2';
+            if (probability > 80) companyTier = 'Tier 1';
+            
+            // Generate improvement suggestions
+            const suggestions = [];
+            if (inputs.cgpa < 7.5) suggestions.push('Improve your CGPA to at least 7.5 for better opportunities');
+            if (inputs.tech_skills < 70) suggestions.push('Take advanced technical courses to boost your skills score');
+            if (inputs.comms_skills < 80) suggestions.push('Join public speaking clubs to enhance communication');
+            if (inputs.projects < 5) suggestions.push('Complete at least 2 more technical projects');
+            if (inputs.internships < 4) suggestions.push('Consider additional internship opportunities');
+            
+            return {
+                probability,
+                salaryRange,
+                companyTier,
+                suggestions
+            };
+        }
+        
+        // Display results
+        function displayResults(prediction) {
+            // Update probability
+            document.getElementById('probabilityScore').textContent = `${prediction.probability}%`;
+            document.getElementById('probabilityBar').style.width = `${prediction.probability}%`;
+            
+            // Update salary
+            document.getElementById('salaryRange').textContent = 
+                `₹${prediction.salaryRange.min.toLocaleString()} - ₹${prediction.salaryRange.max.toLocaleString()}`;
+            
+            // Update company tier
+            document.getElementById('companyTier').textContent = prediction.companyTier;
+            
+            // Update suggestions
+            const suggestionsList = document.getElementById('suggestionsList');
+            suggestionsList.innerHTML = '';
+            prediction.suggestions.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.className = 'flex items-start';
+                item.innerHTML = `
+                    <svg class="h-5 w-5 text-indigo-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-gray-700">${suggestion}</span>
+                `;
+                suggestionsList.appendChild(item);
+            });
+            
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+
